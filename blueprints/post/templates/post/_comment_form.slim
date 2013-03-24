@@ -1,0 +1,8 @@
+- from 'helpers.slim' import render_field
+
+form method="POST" action="{{ url_for('.comment_new', post_id=post.id) }}"
+  {{ form.hidden_tag() }}
+  {{ render_field(form.commenter) }}
+  {{ render_field(form.body) }}
+  .field
+    input type="submit"

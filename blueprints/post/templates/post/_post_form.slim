@@ -1,0 +1,9 @@
+- from 'helpers.slim' import render_field
+
+form method="POST"
+  {{ form.hidden_tag() }}
+  {{ render_field(form.name) }}
+  {{ render_field(form.title) }}
+  {{ render_field(form.content) }}
+  .field
+    input type="submit"

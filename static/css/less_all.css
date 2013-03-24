@@ -1,0 +1,60 @@
+body {
+  font-size: 14px;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  color: #433f40;
+}
+.button {
+  display: inline-block;
+  background: #9ac157;
+  padding: 8px 10px;
+  font-weight: bold;
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-size: 16px;
+}
+.button:hover {
+  background: #80a73e;
+  color: #fff;
+}
+.error {
+  color: #b22222;
+}
+p.error {
+  margin-bottom: 3px;
+}
+.field-with-errors {
+  background: #fae5e3;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 2px;
+}
+.field-with-errors label {
+  color: #9d261d;
+}
+.field-with-errors input[type=text],
+.field-with-errors input[type=password],
+.field-with-errors textarea {
+  border-color: #c87872;
+  -webkit-box-shadow: 0 0 3px rgba(171, 41, 32, 0.25);
+  -moz-box-shadow: 0 0 3px rgba(171, 41, 32, 0.25);
+  box-shadow: 0 0 3px rgba(171, 41, 32, 0.25);
+}
+.field-with-errors input[type=text]:focus,
+.field-with-errors input[type=password]:focus,
+.field-with-errors textarea:focus {
+  border-color: #b9554d;
+  -webkit-box-shadow: 0 0 6px rgba(171, 41, 32, 0.5);
+  -moz-box-shadow: 0 0 6px rgba(171, 41, 32, 0.5);
+  box-shadow: 0 0 6px rgba(171, 41, 32, 0.5);
+}
+.main-container {
+  position: relative;
+  top: 60px;
+}
+.inline {
+  display: inline;
+}
