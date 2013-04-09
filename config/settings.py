@@ -8,6 +8,7 @@ import os
 import logging
 import importlib
 from lib.middlewares import MethodRewriteMiddleware
+from flask import render_template
 
 from .blueprints import *
 
@@ -64,8 +65,7 @@ CONTEXT_PROCESSORS = {
 }
 
 #: Error handlers for http and other arbitrary exceptions.
-#ERROR_HANDLERS = [(404, lambda error: ("Page not found", 404))]
-ERROR_HANDLERS = []
+ERROR_HANDLERS = [(404, lambda error: (render_template('errors/not_found.slim'), 404))]
 
 HTTP_USERNAME = 'admin'
 HTTP_PASSWORD = 'password'
