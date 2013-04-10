@@ -173,7 +173,7 @@ def set_blueprints(app, blueprints):
                            (set_error_handlers, import_string('%s:ERROR_HANDLERS' % blueprint, silent=True)),
                            (set_app_error_handlers, import_string('%s:APP_ERROR_HANDLERS' % blueprint, silent=True))]:
             if values:
-                fn(app, values)
+                fn(blueprint_object, values)
         # Can be mounted at specific prefix.
         if url_prefix:
             app.register_blueprint(blueprint_object, url_prefix=url_prefix)
