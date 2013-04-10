@@ -155,8 +155,8 @@ def set_blueprints(app, blueprints):
         if len(blueprint) == 2:
             blueprint, url_prefix = blueprint
         blueprint_object = import_string('%s:BLUEPRINT' % blueprint, silent=True)
+        blueprint_name, blueprint_import_name = blueprint.split('.')[-1], blueprint
         if not blueprint_object:
-            blueprint_name, blueprint_import_name = blueprint.split('.')[-1], blueprint
             options = dict(static_folder='static', template_folder='templates')
             blueprint_object = Blueprint(blueprint_name, blueprint_import_name, **options)
         blueprint_routes = import_string('%s.urls:routes' % blueprint_import_name, silent=True)
