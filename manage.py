@@ -13,6 +13,7 @@ manager.add_command("assets", ManageAssets())
 
 from config import db
 
+
 @manager.command
 def run_tornado(port=5000):
     """
@@ -21,6 +22,7 @@ def run_tornado(port=5000):
     import script.serve_app_tornado as runner
     signal.signal(signal.SIGINT, interrupt_handler)
     _runner(runner, port)
+
 
 @manager.command
 def run_gevent(port=5000):
@@ -31,6 +33,7 @@ def run_gevent(port=5000):
     import script.serve_app_gevent as runner
     gevent.signal(signal.SIGINT, interrupt_handler)
     _runner(runner, port)
+
 
 def _runner(runner, *args, **kwargs):
     environ = os.environ.get('FLASK_ENV')
@@ -43,13 +46,16 @@ def _runner(runner, *args, **kwargs):
     else:
         runner.run_server(app, *args, **kwargs)
 
+
 def interrupt_handler(*args, **kwargs):
     sys.exit(1)
+
 
 @manager.command
 def db_createall():
     "Creates database"
     db.create_all()
+
 
 @manager.command
 def db_create_models():
@@ -59,6 +65,7 @@ def db_create_models():
     for blueprint_name, blueprint in app.blueprints.iteritems():
         import_string('%s.models' % blueprint.import_name, silent=True)
     db.create_all()
+
 
 @manager.command
 def db_dropall():
@@ -88,12 +95,14 @@ def create_blueprint(name, scaffold=False, fields=''):
     if scaffold:
         create_scaffold('%(name)s/%(name)s' % dict(name=name), fields)
 
+
 @manager.command
 def test():
     """
     Runs unit tests.
     """
     print sp.check_output('nosetests -v', shell=True),
+
 
 @manager.command
 def deps_get():
@@ -102,12 +111,14 @@ def deps_get():
     """
     print sp.check_output("pip install -r requirements.txt", shell=True),
 
+
 @manager.command
 def deps_update():
     """
     Updates dependencies.
     """
     print sp.check_output("pip install -r requirements.txt --upgrade", shell=True),
+
 
 @manager.command
 def create_model(name, fields=''):
@@ -153,8 +164,7 @@ def create_model(name, fields=''):
                                                                        field_declares=field_declares,
                                                                        init_method=init_method)
         if not file_exists:
-            model = '%(imports)s\n%(rest)s' % dict(imports=create_model.imports,
-                                                rest=model)
+            model = '%(imports)s\n%(rest)s' % dict(imports=create_model.imports, rest=model)
         out_file.write(model)
     create_model_form(name, fields)
 
@@ -197,8 +207,7 @@ def create_routes(name):
         routes = create_routes.new_routes % dict(routes=routes)
     with open(output_file, 'a') as out_file:
         if not file_exists:
-            routes = '''%(imports)s\n%(rest)s''' % dict(imports=create_routes.imports,
-                                                rest=routes)
+            routes = '''%(imports)s\n%(rest)s''' % dict(imports=create_routes.imports, rest=routes)
         out_file.write(routes)
 
 create_routes.imports = 'import views'
@@ -217,6 +226,7 @@ routes += [
     %(routes)s
 ]
 '''
+
 
 @manager.command
 def create_model_form(name, fields=''):
@@ -244,7 +254,8 @@ def create_model_form(name, fields=''):
         out_file.write(form)
 
 create_model_form.imports = '''import flask.ext.wtf as wtf
-from flask.ext.wtf import Form, validators
+from flask.ext.wtf import Form
+from wtforms import validators
 from wtforms.ext.sqlalchemy.orm import model_form
 import models
 '''
@@ -278,8 +289,8 @@ def create_view(name, fields=''):
     for f in fields.split():
         form_data.append('form.%s.data' % f.split(':')[0])
     views = create_view.views_scaffold % dict(name=model_name.lower(),
-                                               model_name=model_name.capitalize(),
-                                               form_data=', '.join(form_data))
+                                              model_name=model_name.capitalize(),
+                                              form_data=', '.join(form_data))
     with open(output_file, 'a') as out_file:
         if not file_exists:
             views = '''%(imports)s\n%(rest)s''' % dict(imports=create_view.imports,
@@ -327,6 +338,7 @@ def %(name)s_delete(id):
     return redirect(url_for('%(name)s.index'))
 '''
 
+
 @manager.command
 def create_templates(name, fields=''):
     """
@@ -362,8 +374,8 @@ def create_templates(name, fields=''):
             index_fields.append(create_templates.index_field % dict(name=name, field_name=f))
             field_headers.append(create_templates.index_field_header % dict(field_header=f.capitalize()))
         index = create_templates.index_scaffold % dict(name=name,
-                                                        fields=''.join(index_fields),
-                                                        field_headers=''.join(field_headers))
+                                                       fields=''.join(index_fields),
+                                                       field_headers=''.join(field_headers))
         out_file.write(index)
     # Create show template.
     with open('%s/show.slim' % output_dir, 'a') as out_file:
@@ -441,6 +453,7 @@ create_templates.new_scaffold = '''- extends 'layout.slim'
     - include '%(name)s/_%(name)s_form.slim'
     a href="{{ url_for('.index') }}" Back
 '''
+
 
 @manager.command
 def create_scaffold(name, fields=''):

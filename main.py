@@ -22,6 +22,7 @@ import config
 import config.urls as urls
 import config.settings as settings
 
+
 def init():
     """
     Sets up flask application object `app` and returns it.
@@ -44,13 +45,13 @@ def init():
     config.bcrypt = Bcrypt(app)
     # Other initializations.
     for fn, values in [(set_middlewares, getattr(settings, 'MIDDLEWARES', None)),
-                        (set_context_processors, getattr(settings, 'CONTEXT_PROCESSORS', None)),
-                        (set_template_filters, getattr(settings, 'TEMPLATE_FILTERS', None)),
-                        (set_before_handlers, getattr(settings, 'BEFORE_REQUESTS', None)),
-                        (set_after_handlers, getattr(settings, 'AFTER_REQUESTS', None)),
-                        (set_log_handlers, getattr(settings, 'LOG_HANDLERS', None)),
-                        (set_error_handlers, getattr(settings, 'ERROR_HANDLERS', None)),
-                        (set_blueprints, getattr(settings, 'BLUEPRINTS', None))]:
+                       (set_context_processors, getattr(settings, 'CONTEXT_PROCESSORS', None)),
+                       (set_template_filters, getattr(settings, 'TEMPLATE_FILTERS', None)),
+                       (set_before_handlers, getattr(settings, 'BEFORE_REQUESTS', None)),
+                       (set_after_handlers, getattr(settings, 'AFTER_REQUESTS', None)),
+                       (set_log_handlers, getattr(settings, 'LOG_HANDLERS', None)),
+                       (set_error_handlers, getattr(settings, 'ERROR_HANDLERS', None)),
+                       (set_blueprints, getattr(settings, 'BLUEPRINTS', None))]:
         if values:
             fn(app, values)
 
@@ -62,12 +63,13 @@ def init():
     urls.set_urls(app)
     return app
 
+
 def register_assets(app, assets):
     """
     Registers all css and js assets with `assets`
     """
     def _get_resource_files(static_folder, resource_folder, resource_ext):
-        return [file[len(static_folder) + 1:] for file in
+        return [resource[len(static_folder) + 1:] for resource in
                 glob.glob(static_folder + '/%s/*.%s' % (resource_folder, resource_ext))]
 
     def _get_css_files(static_folder):
@@ -109,7 +111,6 @@ def register_assets(app, assets):
     if js_contents:
         js_all = Bundle(*js_contents, filters='closure_js', output='js/application.js')
         assets.register('js_all', js_all)
-        assets.register('js_all_compressed', js_all, output='js/application.js.gz')
 
     css_contents = []
     if css_files:
@@ -120,7 +121,7 @@ def register_assets(app, assets):
         css_all = Bundle(*css_contents,
                          filters='cssmin', output='css/application.css')
         assets.register('css_all', css_all)
-        assets.register('css_all_compressed', css_all, output='css/application.css.gz')
+
 
 def set_middlewares(app, middlewares):
     """
@@ -144,6 +145,7 @@ def set_middlewares(app, middlewares):
             else:
                 new_mware = m(app.wsgi_app)
             app.wsgi_app = new_mware
+
 
 def set_blueprints(app, blueprints):
     """
@@ -180,6 +182,7 @@ def set_blueprints(app, blueprints):
         else:
             app.register_blueprint(blueprint_object)
 
+
 def set_before_handlers(app, before_handlers):
     """
     Sets before handlers.
@@ -187,6 +190,7 @@ def set_before_handlers(app, before_handlers):
     # Register before request middlewares.
     for before in before_handlers:
         before = app.before_request(before)
+
 
 def set_before_app_handlers(app, before_handlers):
     """
@@ -197,6 +201,7 @@ def set_before_app_handlers(app, before_handlers):
     for before in before_handlers:
         before = app.before_app_request(before)
 
+
 def set_after_handlers(app, after_handlers):
     """
     Sets after handlers.
@@ -204,6 +209,7 @@ def set_after_handlers(app, after_handlers):
     # Register before request middlewares.
     for after in after_handlers:
         after = app.after_request(after)
+
 
 def set_after_app_handlers(app, after_handlers):
     """
@@ -214,6 +220,7 @@ def set_after_app_handlers(app, after_handlers):
     for after in after_handlers:
         after = app.after_app_request(after)
 
+
 def set_log_handlers(app, log_handlers):
     """
     Sets log handlers for the app.
@@ -222,6 +229,7 @@ def set_log_handlers(app, log_handlers):
     for handler in log_handlers:
         app.logger.addHandler(handler)
 
+
 def set_template_filters(app, template_filters):
     """
     Sets jinja2 template filters.
@@ -229,11 +237,13 @@ def set_template_filters(app, template_filters):
     for filter_name, filter_fn in template_filters:
         app.jinja_env.filters[filter_name] = filter_fn
 
+
 def set_context_processors(app, context_processors):
     """
     Sets jinja2 context processors.
     """
     app.context_processor(lambda: context_processors)
+
 
 def set_app_context_processors(app, context_processors):
     """
@@ -242,12 +252,14 @@ def set_app_context_processors(app, context_processors):
     """
     app.app_context_processor(lambda: context_processors)
 
+
 def set_error_handlers(app, error_handlers):
     """
     Sets error handlers.
     """
     for code, fn in error_handlers:
         fn = app.errorhandler(code)(fn)
+
 
 def set_app_error_handlers(app, error_handlers):
     """

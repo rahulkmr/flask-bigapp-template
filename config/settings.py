@@ -48,19 +48,18 @@ stream_logger.setFormatter(logging.Formatter('''
                                              Message:
 
                                              %(message)s
-                                             '''
-                                            ))
+                                             '''))
 stream_logger.setLevel(logging.DEBUG)
 
 #: Custom log handlers.
 LOG_HANDLERS = [stream_logger]
 
 #: Jinja2 filters.
-#TEMPLATE_FILTERS = [('custom_reverse', lambda x: x[::-1])]
+# TEMPLATE_FILTERS = [('custom_reverse', lambda x: x[::-1])]
 TEMPLATE_FILTERS = []
 
 #: Jinja2 context processors.
-#CONTEXT_PROCESSORS = {name: val}
+# CONTEXT_PROCESSORS = {name: val}
 CONTEXT_PROCESSORS = {
 }
 
