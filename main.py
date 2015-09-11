@@ -109,7 +109,7 @@ def register_assets(app, assets):
     if js_contents:
         js_all = Bundle(*js_contents, filters='closure_js', output='js/application.js')
         assets.register('js_all', js_all)
-        assets.register('js_all_compressed', js_all, filters='gzip', output='js/application.js.gz')
+        assets.register('js_all_compressed', js_all, output='js/application.js.gz')
 
     css_contents = []
     if css_files:
@@ -120,7 +120,7 @@ def register_assets(app, assets):
         css_all = Bundle(*css_contents,
                          filters='cssmin', output='css/application.css')
         assets.register('css_all', css_all)
-        assets.register('css_all_compressed', css_all, filters='gzip', output='css/application.css.gz')
+        assets.register('css_all_compressed', css_all, output='css/application.css.gz')
 
 def set_middlewares(app, middlewares):
     """
