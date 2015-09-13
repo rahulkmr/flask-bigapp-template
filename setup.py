@@ -21,7 +21,8 @@ requirements = [
     'augment==0.4',
 ]
 
-if not environ:
+# Add dev dependencies.
+if not environ or environ == 'dev':
     requirements += [
         'closure',
         'jsmin',
