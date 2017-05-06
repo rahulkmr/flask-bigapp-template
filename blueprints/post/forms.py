@@ -1,4 +1,4 @@
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from wtforms import validators
 from wtforms.ext.sqlalchemy.orm import model_form
 import models

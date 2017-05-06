@@ -1,0 +1,10 @@
+{% from 'helpers.jinja2' import render_field %}
+<form  method="POST">
+  {{ form.hidden_tag() }}
+  {{ render_field(form.name) }}
+  {{ render_field(form.title) }}
+  {{ render_field(form.content) }}
+  <div class="field">
+    <input  type="submit" />
+  </div>
+</form>

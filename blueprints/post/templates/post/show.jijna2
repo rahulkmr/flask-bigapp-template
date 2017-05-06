@@ -1,0 +1,25 @@
+{% extends 'layout.jinja2' %}
+{% from 'helpers.jinja2' import flashed %}
+{% block content %}
+  {{ flashed() }}
+  <p>
+    <strong>Name:</strong>
+  </p>
+  <p>{{ post.name }}</p>
+  <p>
+    <strong>Title:</strong>
+  </p>
+  <p>{{ post.title }}</p>
+  <p>
+    <strong>Content:</strong>
+  </p>
+  <p>{{ post.content }}</p>
+  <a  href="{{ url_for('.edit', id=post.id) }}">Edit</a>
+  <a  href="{{ url_for('.index') }}">Back</a>
+  <h2>Add a comment</h2>
+  {% include 'post/_comment_form.jinja2' %}
+  {% for comment in post.comments %}
+    <p><strong>{{ comment.commenter  }}</strong> says <em>{{ comment.body }}</em></p>
+    <a  data-confirm="Are you sure?" href="{{ url_for('.comment_delete', post_id=post.id, id=comment.id) }}" data-method="delete">Delete</a>
+  {% endfor %}
+{% endblock %}

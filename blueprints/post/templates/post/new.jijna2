@@ -1,0 +1,6 @@
+{% extends 'layout.jinja2' %}
+{% block content %}
+    <h2>Creating new post</h2>
+    {% include 'post/_post_form.jinja2' %}
+    <a  href="{{ url_for('.index') }}">Back</a>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'layout.jinja2' %}
+{% block content %}
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Content</th>
+        <th> </th>
+        <th> </th>
+        <th> </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in object_list %}
+        <tr>
+          <td>{{ post.name }}</td>
+          <td>{{ post.title }}</td>
+          <td>{{ post.content }}</td>
+          <td>
+            <a  href="{{ url_for('.show', id=post.id) }}">Show</a>
+          </td>
+          <td>
+            <a  href="{{ url_for('.edit', id=post.id) }}">Edit</a>
+          </td>
+          <td>
+            <a  data-confirm="Are you sure?" href="{{ url_for('.delete', id=post.id) }}" data-method="delete">Delete</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a  href="{{ url_for('.new') }}">New post</a>
+{% endblock %}

@@ -18,6 +18,7 @@ def set_urls(app, routes=routes):
         url_rule, endpoint, view_func, opts = parse_url_rule(rule)
         app.add_url_rule(url_rule, endpoint=endpoint, view_func=view_func, **opts)
 
+
 def parse_url_rule(rule):
     """
     Breaks `rule` into `url`, `endpoint`, `view_func` and `opts`

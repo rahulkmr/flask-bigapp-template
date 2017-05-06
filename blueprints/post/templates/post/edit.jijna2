@@ -1,0 +1,7 @@
+{% extends 'layout.jinja2' %}
+{% block content %}
+    <h2>Editing post</h2>
+    {% include 'post/_post_form.jinja2' %}
+    <a  href="{{ url_for('.show', id=post.id) }}">Show</a>
+    <a  href="{{ url_for('.index') }}">Back</a>
+{% endblock %}
