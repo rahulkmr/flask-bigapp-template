@@ -76,7 +76,7 @@ if environ:
     _this_module = sys.modules[__name__]
     try:
         _m = importlib.import_module('config.%s_settings' % environ)
-    except ImportError, ex:
+    except ImportError as ex:
         pass
     else:
         for _k in dir(_m):
@@ -84,6 +84,6 @@ if environ:
 # Dev is the default environment.
 else:
     try:
-        from dev_settings import *
-    except ImportError, ex:
+        from .dev_settings import *
+    except ImportError as ex:
         pass

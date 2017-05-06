@@ -93,7 +93,7 @@ def register_assets(app, assets):
     js_files = _get_js_files(static_folder)
     coffee_files = _get_coffee_files(static_folder)
 
-    for name, bp in app.blueprints.iteritems():
+    for name, bp in app.blueprints.items():
         if name == 'debugtoolbar':
             continue
         static_folder = bp.static_folder
