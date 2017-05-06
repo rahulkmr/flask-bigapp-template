@@ -2,8 +2,8 @@ import os, signal, sys
 import subprocess as sp
 import werkzeug.serving
 from werkzeug import import_string
-from flask.ext.script import Manager
-from flask.ext.assets import ManageAssets
+from flask_script import Manager
+from flask_assets import ManageAssets
 import main
 
 app = main.app
@@ -62,7 +62,7 @@ def db_create_models():
     "Creates database tables."
     # db_createall doesn't work if the models aren't imported
     import_string('models', silent=True)
-    for blueprint_name, blueprint in app.blueprints.iteritems():
+    for blueprint_name, blueprint in app.blueprints.items():
         import_string('%s.models' % blueprint.import_name, silent=True)
     db.create_all()
 
@@ -72,7 +72,7 @@ def db_dropall():
     "Drops all database tables"
     # db_dropall doesn't work if the models aren't imported
     import_string('models', silent=True)
-    for blueprint_name, blueprint in app.blueprints.iteritems():
+    for blueprint_name, blueprint in app.blueprints.items():
         import_string('%s.models' % blueprint.import_name, silent=True)
     db.drop_all()
 
@@ -88,10 +88,10 @@ def create_blueprint(name, scaffold=False, fields=''):
         # Create blueprint without scaffold.
         python manage.py create_blueprint post -f 'name:String(80) title:String(200) content:Text
     """
-    print sp.check_output('mkdir -p blueprints/%(name)s/templates/%(name)s' % locals(), shell=True),
+    print(sp.check_output('mkdir -p blueprints/%(name)s/templates/%(name)s' % locals(), shell=True), end=' ')
     for static_dir in ('css', 'js', 'img'):
-        print sp.check_output('mkdir -p blueprints/%(name)s/static/%(static_dir)s' % locals(), shell=True),
-    print sp.check_output("touch blueprints/%(name)s/__init__.py" % locals(), shell=True),
+        print(sp.check_output('mkdir -p blueprints/%(name)s/static/%(static_dir)s' % locals(), shell=True), end=' ')
+    print(sp.check_output("touch blueprints/%(name)s/__init__.py" % locals(), shell=True), end=' ')
     if scaffold:
         create_scaffold('%(name)s/%(name)s' % dict(name=name), fields)
 
@@ -101,7 +101,7 @@ def test():
     """
     Runs unit tests.
     """
-    print sp.check_output('nosetests -v', shell=True),
+    print(sp.check_output('nosetests -v', shell=True), end=' ')
 
 
 @manager.command
@@ -109,7 +109,7 @@ def deps_get():
     """
     Installs dependencies.
     """
-    print sp.check_output("pip install -r requirements.txt", shell=True),
+    print(sp.check_output("pip install -r requirements.txt", shell=True), end=' ')
 
 
 @manager.command
@@ -117,7 +117,7 @@ def deps_update():
     """
     Updates dependencies.
     """
-    print sp.check_output("pip install -r requirements.txt --upgrade", shell=True),
+    print(sp.check_output("pip install -r requirements.txt --upgrade", shell=True), end=' ')
 
 
 @manager.command
@@ -253,8 +253,8 @@ def create_model_form(name, fields=''):
                                                       rest=form)
         out_file.write(form)
 
-create_model_form.imports = '''import flask.ext.wtf as wtf
-from flask.ext.wtf import Form
+create_model_form.imports = '''import flask_wtf as wtf
+from flask_wtf import Form
 from wtforms import validators
 from wtforms.ext.sqlalchemy.orm import model_form
 import models
