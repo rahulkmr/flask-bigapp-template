@@ -17,14 +17,13 @@ requirements = [
     'Flask-Bcrypt==0.6.2',
 
     # Misc 3rd party
-    'slimish_jinja==1.0.2',
     'augment==0.4',
 ]
 
 # Add dev dependencies.
 if not environ or environ == 'dev':
     requirements += [
-        'closure',
+        # 'closure',
         'jsmin',
         'cssmin',
 
@@ -36,8 +35,8 @@ if not environ or environ == 'dev':
         'pylint',
         'ipython',
         'ipdb',
-
-        'gevent']
+        'gevent'
+        ]
 
 
 setup(
