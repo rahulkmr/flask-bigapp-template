@@ -85,7 +85,7 @@ def create_blueprint(name, scaffold=False, fields=''):
         # Create blueprint with scaffold.
         python manage.py create_blueprint post -s -f 'name:String(80) title:String(200) content:Text
 
-        # Create blueprint with scaffold.
+        # Create blueprint without scaffold.
         python manage.py create_blueprint post -f 'name:String(80) title:String(200) content:Text
     """
     print sp.check_output('mkdir -p blueprints/%(name)s/templates/%(name)s' % locals(), shell=True),
@@ -393,7 +393,8 @@ def create_templates(name, fields=''):
 
 create_templates.form_scaffold = '''{% from 'helpers.jinja2' import render_field %}
 <form  method="POST">
-  {{ form.hidden_tag() }}%(fields)s }}
+  {{ form.hidden_tag() }}
+  %(fields)s
   <div class="field">
     <input  type="submit" />
   </div>
@@ -439,7 +440,8 @@ create_templates.index_field_header = '''
 create_templates.show_scaffold = '''{% extends 'layout.jinja2' %}
 {% from 'helpers.jinja2' import flashed %}
 {% block content %}
-  {{ flashed() }}%(fields)s }}
+  {{ flashed() }}
+  %(fields)s
   <a  href="{{ url_for('.edit', id=%(name)s.id) }}">Edit</a>
   <a  href="{{ url_for('.index') }}">Back</a>
 {% endblock %}
