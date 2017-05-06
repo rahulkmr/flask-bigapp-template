@@ -306,11 +306,11 @@ import forms
 create_view.views_scaffold = '''
 def %(name)s_index():
     object_list = models.%(model_name)s.query.all()
-    return render_template('%(name)s/index.slim', object_list=object_list)
+    return render_template('%(name)s/index.jinja2', object_list=object_list)
 
 def %(name)s_show(id):
     %(name)s = models.%(model_name)s.query.get(id)
-    return render_template('%(name)s/show.slim', %(name)s=%(name)s)
+    return render_template('%(name)s/show.jinja2', %(name)s=%(name)s)
 
 def %(name)s_new():
     form = forms.%(model_name)sForm()
@@ -319,7 +319,7 @@ def %(name)s_new():
         db.session.add(%(name)s)
         db.session.commit()
         return redirect(url_for('%(name)s.index'))
-    return render_template('%(name)s/new.slim', form=form)
+    return render_template('%(name)s/new.jinja2', form=form)
 
 def %(name)s_edit(id):
     %(name)s = models.%(model_name)s.query.get(id)
@@ -329,7 +329,7 @@ def %(name)s_edit(id):
         db.session.add(%(name)s)
         db.session.commit()
         return redirect(url_for('%(name)s.show', id=id))
-    return render_template('%(name)s/edit.slim', form=form, %(name)s=%(name)s)
+    return render_template('%(name)s/edit.jinja2', form=form, %(name)s=%(name)s)
 
 def %(name)s_delete(id):
     %(name)s = models.%(model_name)s.query.get(id)
@@ -360,14 +360,14 @@ def create_templates(name, fields=''):
     sp.check_call('mkdir -p %s' % output_dir, shell=True),
     fields = [f.split(':')[0] for f in fields.split()]
     # Create form template.
-    with open('%s/_%s_form.slim' % (output_dir, name), 'a') as out_file:
+    with open('%s/_%s_form.jinja2' % (output_dir, name), 'a') as out_file:
         form_fields = []
         for f in fields:
             form_fields.append(create_templates.form_field % dict(field_name=f))
         form = create_templates.form_scaffold % dict(name=name, fields=''.join(form_fields))
         out_file.write(form)
     # Create index template.
-    with open('%s/index.slim' % output_dir, 'a') as out_file:
+    with open('%s/index.jinja2' % output_dir, 'a') as out_file:
         index_fields = []
         field_headers = []
         for f in fields:
@@ -378,7 +378,7 @@ def create_templates(name, fields=''):
                                                        field_headers=''.join(field_headers))
         out_file.write(index)
     # Create show template.
-    with open('%s/show.slim' % output_dir, 'a') as out_file:
+    with open('%s/show.jinja2' % output_dir, 'a') as out_file:
         show_fields = []
         for f in fields:
             show_fields.append(create_templates.show_field % dict(name=name, field_header=f.capitalize(),
@@ -388,70 +388,82 @@ def create_templates(name, fields=''):
         out_file.write(show)
     # Create edit and new templates.
     for template_name in ('edit', 'new'):
-        with open('%s/%s.slim' % (output_dir, template_name), 'a') as out_file:
+        with open('%s/%s.jinja2' % (output_dir, template_name), 'a') as out_file:
             out_file.write(getattr(create_templates, '%s_scaffold' % template_name) % dict(name=name))
 
-create_templates.form_scaffold = '''- from 'helpers.slim' import render_field
-
-form method="POST"
-  {{ form.hidden_tag() }}%(fields)s
-  .field
-    input type="submit"
+create_templates.form_scaffold = '''{% from 'helpers.jinja2' import render_field %}
+<form  method="POST">
+  {{ form.hidden_tag() }}%(fields)s }}
+  <div class="field">
+    <input  type="submit" />
+  </div>
+</form>
 '''
 create_templates.form_field = '''
   {{ render_field(form.%(field_name)s) }}'''
-create_templates.index_scaffold = '''- extends 'layout.slim'
-
-- block content
-  table
-    thead
-      tr%(field_headers)s
-        %%th
-        %%th
-        %%th
-    tbody
-      - for %(name)s in object_list
-        tr%(fields)s
-          td
-            a href="{{ url_for('.show', id=%(name)s.id) }}" Show
-          td
-            a href="{{ url_for('.edit', id=%(name)s.id) }}" Edit
-          td
-            a href="{{ url_for('.delete', id=%(name)s.id) }}" data-confirm="Are you sure?" data-method="delete" Delete
-
-  a href="{{ url_for('.new') }}" New %(name)s
+create_templates.index_scaffold = '''{% extends 'layout.jinja2' %}
+{% block content %}
+  <table>
+    <thead>
+      <tr>
+        %(field_headers)s
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for %(name)s in object_list %}
+        <tr>
+          %(fields)s
+          <td>
+            <a  href="{{ url_for('.show', id=%(name)s.id) }}">Show</a>
+          </td>
+          <td>
+            <a  href="{{ url_for('.edit', id=%(name)s.id) }}">Edit</a>
+          </td>
+          <td>
+            <a  data-confirm="Are you sure?" data-method="delete" href="{{ url_for('.delete', id=%(name)s.id) }}">Delete</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a  href="{{ url_for('.new') }}">New %(name)s</a>
+{% endblock %}
 '''
 create_templates.index_field = '''
-          td {{ %(name)s.%(field_name)s }}'''
+          <td>{{ %(name)s.%(field_name)s</td>'''
 create_templates.index_field_header = '''
-        th %(field_header)s'''
-create_templates.show_scaffold = '''- extends 'layout.slim'
-- from 'helpers.slim' import flashed
-
-- block content
-  {{ flashed() }}%(fields)s
-  a href="{{ url_for('.edit', id=%(name)s.id) }}" Edit
-  a href="{{ url_for('.index') }}" Back
+        <th>%(field_header)s</th>'''
+create_templates.show_scaffold = '''{% extends 'layout.jinja2' %}
+{% from 'helpers.jinja2' import flashed %}
+{% block content %}
+  {{ flashed() }}%(fields)s }}
+  <a  href="{{ url_for('.edit', id=%(name)s.id) }}">Edit</a>
+  <a  href="{{ url_for('.index') }}">Back</a>
+{% endblock %}
 '''
 create_templates.show_field = '''
-  p
-    strong %(field_header)s:
-  p {{ %(name)s.%(field_name)s }}
+  <p>
+    <strong>%(field_header)s:</strong>
+  </p>
+  <p>{{ %(name)s.%(field_name)s }}</p>
 '''
-create_templates.edit_scaffold = '''- extends 'layout.slim'
-
-- block content
-    h2 Editing %(name)s
-    - include '%(name)s/_%(name)s_form.slim'
-    a href="{{ url_for('.show', id=%(name)s.id) }}" Show
-    a href="{{ url_for('.index') }}" Back
+create_templates.edit_scaffold = '''{% extends 'layout.jinja2' %}
+{% block content %}
+    <h2>Editing %(name)s</h2>
+    {% include '%(name)s/_%(name)s_form.jinja2' %}
+    <a  href="{{ url_for('.show', id=%(name)s.id) }}">Show</a>
+    <a  href="{{ url_for('.index') }}">Back</a>
+{% endblock %}
 '''
-create_templates.new_scaffold = '''- extends 'layout.slim'
-
-- block content
-    h2 Creating new %(name)s
-    - include '%(name)s/_%(name)s_form.slim'
-    a href="{{ url_for('.index') }}" Back
+create_templates.new_scaffold = '''{% extends 'layout.jinja2' %}
+{% block content %}
+    <h2>Creating new %(name)s</h2>
+    {% include '%(name)s/_%(name)s_form.jinja2' %}
+    <a  href="{{ url_for('.index') }}">Back</a>
+{% endblock %}
 '''
 
 

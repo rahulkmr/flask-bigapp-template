@@ -1,0 +1,27 @@
+<!doctype html>
+<html  lang="en">
+    <head>
+        {% block meta_tags %}{% endblock %}
+        {% assets 'css_all' %}
+        <link  type="text/css" rel="stylesheet" href="{{ ASSET_URL }}" />
+        {% endassets %}
+        {% block styles %}{% endblock %}
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container-fluid"> </div>
+            </div>
+        </div>
+        {% from 'helpers.jinja2' import flashed %}
+        <div class="container-fluid main-container">
+            {{ flashed() }}
+            {% block content %}{% endblock %}
+            {% block footer %}{% endblock %}
+        </div>
+        {% assets 'js_all' %}
+        <script  type="text/javascript" src="{{ ASSET_URL }}"> </script>
+        {% endassets %}
+    </body>
+</html>
