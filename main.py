@@ -10,12 +10,12 @@ from flask import Flask
 from flask import Blueprint
 from slimish_jinja import SlimishExtension
 from werkzeug import import_string
-from flask.ext.bcrypt import Bcrypt
-from flask.ext.babel import Babel
-from flask.ext.cache import Cache
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.assets import Environment, Bundle
-from flask.ext.debugtoolbar import DebugToolbarExtension
+from flask_bcrypt import Bcrypt
+from flask_babel import Babel
+from flask_cache import Cache
+from flask_sqlalchemy import SQLAlchemy
+from flask_assets import Environment, Bundle
+from flask_debugtoolbar import DebugToolbarExtension
 
 
 import config
