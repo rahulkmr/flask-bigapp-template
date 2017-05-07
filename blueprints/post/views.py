@@ -1,7 +1,6 @@
 from flask import render_template, redirect, url_for, request
 from config import db
-import models
-import forms
+from . import models, forms
 
 
 def post_index():
@@ -24,7 +23,7 @@ def post_new():
 
 def post_edit(id):
     post = models.Post.query.get(id)
-    form = forms.PostForm(request.form, post)
+    form = forms.PostForm(request.form, obj=post)
     if form.validate_on_submit():
         post.name = form.name.data
         post.title = form.title.data

@@ -1,4 +1,4 @@
-import views
+from . import views
 
 routes = [
     ('/', 'index', views.post_index),
