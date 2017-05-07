@@ -210,7 +210,7 @@ def create_routes(name):
             routes = '''%(imports)s\n%(rest)s''' % dict(imports=create_routes.imports, rest=routes)
         out_file.write(routes)
 
-create_routes.imports = 'import views'
+create_routes.imports = 'from . import views'
 create_routes.routes_scaffold = '''('/', 'index', views.%(model_name)s_index),
     ('/<int:id>', 'show', views.%(model_name)s_show),
     ('/new', 'new', views.%(model_name)s_new, {'methods': ['GET', 'POST']}),
@@ -254,13 +254,13 @@ def create_model_form(name, fields=''):
         out_file.write(form)
 
 create_model_form.imports = '''import flask_wtf as wtf
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import validators
 from wtforms.ext.sqlalchemy.orm import model_form
-import models
+from . import models
 '''
 create_model_form.form_scaffold = '''
-%(model_name)sForm = model_form(models.%(model_name)s, models.db.session, Form, field_args = {%(field_args)s
+%(model_name)sForm = model_form(models.%(model_name)s, models.db.session, FlaskForm, field_args = {%(field_args)s
 })
 '''
 create_model_form.field_args = '''
@@ -300,8 +300,7 @@ def create_view(name, fields=''):
 
 create_view.imports = '''from flask import render_template, redirect, url_for, flash, request
 from config import db
-import models
-import forms
+from . import models, forms
 '''
 create_view.views_scaffold = '''
 def %(name)s_index():
