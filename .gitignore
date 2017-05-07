@@ -4,3 +4,5 @@
 venv/
 tmp/
 tags
+dist/
+*.egg-info/
