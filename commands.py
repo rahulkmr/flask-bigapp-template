@@ -9,7 +9,7 @@ from config import db, app
 
 
 @app.cli.command()
-@click.option('--port', default=5000)
+@click.option('--port', '-p', default=5000)
 def run_tornado(port):
     """
     Runs application under tornado.
@@ -20,7 +20,7 @@ def run_tornado(port):
 
 
 @app.cli.command()
-@click.option('--port', default=5000)
+@click.option('--port', '-p', default=5000)
 def run_gevent(port=5000):
     """
     Runs gevent server.
@@ -81,8 +81,8 @@ def db_dropall():
 
 @app.cli.command()
 @click.argument('name')
-@click.option('--scaffold', default=False)
-@click.option('--fields', default='')
+@click.option('--scaffold', '-s', is_flag=True, default=False)
+@click.option('--fields', '-f', default='')
 def create_blueprint(name, scaffold=False, fields=''):
     """
     Creates app folder structure. Optionally, scaffolds the app with models, forms, views and templates.
@@ -133,7 +133,7 @@ def deps_update():
 
 @app.cli.command()
 @click.argument('name')
-@click.option('--fields', default='')
+@click.option('--fields', '-f', default='')
 def create_model(name, fields=''):
     """
     Creates model scaffold and the model form.
@@ -255,7 +255,7 @@ routes += [
 
 @app.cli.command()
 @click.argument('name')
-@click.option('--fields', default='')
+@click.option('--fields', '-f', default='')
 def create_model_form(name, fields=''):
     """
     Creates model form scaffold.
@@ -298,7 +298,7 @@ create_model_form.field_args = '''
 
 @app.cli.command()
 @click.argument('name')
-@click.option('--fields', default='')
+@click.option('--fields', '-f', default='')
 def create_view(name, fields=''):
     """
     Creates view scaffold. It also creates the templates.
@@ -376,7 +376,7 @@ def %(name)s_delete(id):
 
 @app.cli.command()
 @click.argument('name')
-@click.option('--fields', default='')
+@click.option('--fields', '-f', default='')
 def create_templates(name, fields=''):
     """
     Creates templates.
@@ -513,7 +513,7 @@ create_templates.new_scaffold = '''{% extends 'layout.jinja2' %}
 
 @app.cli.command()
 @click.argument('name')
-@click.option('--fields', default='')
+@click.option('--fields', '-f', default='')
 def create_scaffold(name, fields=''):
     """
     Creates scaffold - model, model form, views, templates and routes.
