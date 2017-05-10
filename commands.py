@@ -521,3 +521,18 @@ def create_scaffold(name, fields=''):
     create_model(name, fields)
     create_view(name, fields)
     create_routes(name)
+
+
+@app.cli.command()
+def ipython():
+    """IPython shell"""
+    import IPython
+    banner = 'Python %s on %s\nIPython: %s\nApp: %s%s\nInstance: %s\n' % (
+        sys.version,
+        sys.platform,
+        IPython.__version__,
+        app.import_name,
+        app.debug and ' [debug]' or '',
+        app.instance_path,
+    )
+    IPython.embed(banner1=banner, ctx=app.make_shell_context())
