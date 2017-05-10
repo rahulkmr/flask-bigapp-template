@@ -8,7 +8,6 @@ import glob
 
 from flask import Flask
 from flask import Blueprint
-from slimish_jinja import SlimishExtension
 from werkzeug import import_string
 from flask_bcrypt import Bcrypt
 from flask_babel import Babel
@@ -40,8 +39,6 @@ def init():
     Babel(app)
 
     config.cache = Cache(app)
-    app.jinja_env.add_extension(SlimishExtension)
-    app.jinja_env.slim_debug = app.debug
     config.bcrypt = Bcrypt(app)
     # Other initializations.
     for fn, values in [(set_middlewares, getattr(settings, 'MIDDLEWARES', None)),
@@ -61,6 +58,8 @@ def init():
 
     # URL rules.
     urls.set_urls(app)
+    # Set flask-cli commands
+    import commands
     return app
 
 
