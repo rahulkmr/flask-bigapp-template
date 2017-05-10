@@ -1,21 +1,16 @@
 import os, signal, sys
 import subprocess as sp
 import werkzeug.serving
+import click
 from werkzeug import import_string
-from flask_script import Manager
-from flask_assets import ManageAssets
-import main
-
-app = main.app
-manager = Manager(app)
-
-manager.add_command("assets", ManageAssets())
-
-from config import db
 
 
-@manager.command
-def run_tornado(port=5000):
+from config import db, app
+
+
+@app.cli.command()
+@click.option('--port', default=5000)
+def run_tornado(port):
     """
     Runs application under tornado.
     """
@@ -24,7 +19,8 @@ def run_tornado(port=5000):
     _runner(runner, port)
 
 
-@manager.command
+@app.cli.command()
+@click.option('--port', default=5000)
 def run_gevent(port=5000):
     """
     Runs gevent server.
@@ -51,15 +47,19 @@ def interrupt_handler(*args, **kwargs):
     sys.exit(1)
 
 
-@manager.command
+@app.cli.command()
 def db_createall():
-    "Creates database"
+    """Creates databases.
+    Use migrations instead.
+    """
     db.create_all()
 
 
-@manager.command
+@app.cli.command()
 def db_create_models():
-    "Creates database tables."
+    """Creates database tables.
+    Use migrations instead.
+    """
     # db_createall doesn't work if the models aren't imported
     import_string('models', silent=True)
     for blueprint_name, blueprint in app.blueprints.items():
@@ -67,9 +67,11 @@ def db_create_models():
     db.create_all()
 
 
-@manager.command
+@app.cli.command()
 def db_dropall():
-    "Drops all database tables"
+    """Drops all database tables
+    Use migrations instead.
+    """
     # db_dropall doesn't work if the models aren't imported
     import_string('models', silent=True)
     for blueprint_name, blueprint in app.blueprints.items():
@@ -77,16 +79,25 @@ def db_dropall():
     db.drop_all()
 
 
-@manager.command
+@app.cli.command()
+@click.argument('name')
+@click.option('--scaffold', default=False)
+@click.option('--fields', default='')
 def create_blueprint(name, scaffold=False, fields=''):
     """
     Creates app folder structure. Optionally, scaffolds the app with models, forms, views and templates.
-    Eg.
-        # Create blueprint with scaffold.
-        python manage.py create_blueprint post -s -f 'name:String(80) title:String(200) content:Text
 
+    \b
+    Eg.
+
+        \b
+        # Create blueprint with scaffold.
+        create_blueprint post -s -f 'name:String(80) title:String(200) content:Text
+
+
+        \b
         # Create blueprint without scaffold.
-        python manage.py create_blueprint post -f 'name:String(80) title:String(200) content:Text
+        create_blueprint post -f 'name:String(80) title:String(200) content:Text
     """
     print(sp.check_output('mkdir -p blueprints/%(name)s/templates/%(name)s' % locals(), shell=True), end=' ')
     for static_dir in ('css', 'js', 'img'):
@@ -96,7 +107,7 @@ def create_blueprint(name, scaffold=False, fields=''):
         create_scaffold('%(name)s/%(name)s' % dict(name=name), fields)
 
 
-@manager.command
+@app.cli.command()
 def test():
     """
     Runs unit tests.
@@ -104,7 +115,7 @@ def test():
     print(sp.check_output('nosetests -v', shell=True), end=' ')
 
 
-@manager.command
+@app.cli.command()
 def deps_get():
     """
     Installs dependencies.
@@ -112,7 +123,7 @@ def deps_get():
     print(sp.check_output("pip install -r requirements.txt", shell=True), end=' ')
 
 
-@manager.command
+@app.cli.command()
 def deps_update():
     """
     Updates dependencies.
@@ -120,14 +131,22 @@ def deps_update():
     print(sp.check_output("pip install -r requirements.txt --upgrade", shell=True), end=' ')
 
 
-@manager.command
+@app.cli.command()
+@click.argument('name')
+@click.option('--fields', default='')
 def create_model(name, fields=''):
     """
     Creates model scaffold and the model form.
+
+    \b
     Eg:
+
+        \b
         # Create top level model.
         python manage.py create_model tag -f 'name:String(80) post_id:Integer'
 
+
+        \b
         # Create model within a blueprint.
         python manage.py create_model post/tag -f 'name:String(80) post_id:Integer'
     """
@@ -182,14 +201,20 @@ create_model.init_method = '''
 '''
 
 
-@manager.command
+@app.cli.command()
+@click.argument('name')
 def create_routes(name):
     """
     Creates routes scaffold.
+
+    \b
     Eg.
+
+        \b
         # Top level routes.
         python manage.py create_routes post
 
+        \b
         # Blueprint routes.
         python manage.py create_routes post/tag
     """
@@ -228,10 +253,14 @@ routes += [
 '''
 
 
-@manager.command
+@app.cli.command()
+@click.argument('name')
+@click.option('--fields', default='')
 def create_model_form(name, fields=''):
     """
     Creates model form scaffold.
+
+    \b
     Eg:
         python manage.py create_model tag -f 'name:String(80) post_id:Integer'
     """
@@ -267,14 +296,21 @@ create_model_form.field_args = '''
     '%(field_name)s': {'validators': []},'''
 
 
-@manager.command
+@app.cli.command()
+@click.argument('name')
+@click.option('--fields', default='')
 def create_view(name, fields=''):
     """
     Creates view scaffold. It also creates the templates.
+
+    \b
     Eg.
+
+        \b
         # Top level views.
         python manage.py create_view comment -f 'commenter body post_id'
 
+        \b
         # Blueprint views.
         python manage.py create_view post/comment -f 'commenter body post_id'
     """
@@ -338,14 +374,21 @@ def %(name)s_delete(id):
 '''
 
 
-@manager.command
+@app.cli.command()
+@click.argument('name')
+@click.option('--fields', default='')
 def create_templates(name, fields=''):
     """
     Creates templates.
+
+    \b
     Eg.
+
+        \b
         # Top level templates.
         python manage.py create_templates comment -f 'commenter body post_id'
 
+        \b
         # Blueprint templates.
         python manage.py create_templates post/comment -f 'commenter body post_id'
     """
@@ -468,7 +511,9 @@ create_templates.new_scaffold = '''{% extends 'layout.jinja2' %}
 '''
 
 
-@manager.command
+@app.cli.command()
+@click.argument('name')
+@click.option('--fields', default='')
 def create_scaffold(name, fields=''):
     """
     Creates scaffold - model, model form, views, templates and routes.
@@ -476,7 +521,3 @@ def create_scaffold(name, fields=''):
     create_model(name, fields)
     create_view(name, fields)
     create_routes(name)
-
-
-if __name__ == '__main__':
-    manager.run()
