@@ -5,6 +5,7 @@ TESTING = True
 #: Database to use for SQLAlchemy.
 SQLALCHEMY_DATABASE_URI = 'sqlite:///tmp/dev.db'
 SQLALCHEMY_ECHO = True
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 USE_X_SENDFILE = False
 CACHE_TYPE = 'simple'
