@@ -68,6 +68,7 @@ def db_create_models():
 
 
 @app.cli.command()
+@click.confirmation_option(prompt='Are you sure you want to drop the db?')
 def db_dropall():
     """Drops all database tables
     Use migrations instead.
