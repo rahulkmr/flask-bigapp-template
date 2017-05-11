@@ -7,3 +7,4 @@ tags
 dist/
 *.egg-info/
 __pycache__/
+Flask_Template.egg-info/
