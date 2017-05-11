@@ -13,8 +13,9 @@ from flask_bcrypt import Bcrypt
 from flask_babel import Babel
 from flask_cache import Cache
 from flask_sqlalchemy import SQLAlchemy
-from flask_assets import Environment, Bundle
+from flask_assets import Environment
 from flask_debugtoolbar import DebugToolbarExtension
+import webassets.loaders
 
 
 import config
@@ -54,72 +55,14 @@ def init():
 
     # Register all js and css files.
     assets = Environment(app)
-    register_assets(app, assets)
+    for name, bundle in webassets.loaders.YAMLLoader('assets.yml').load_bundles().items():
+        assets.register(name, bundle)
 
     # URL rules.
     urls.set_urls(app)
     # Set flask-cli commands
     import commands
     return app
-
-
-def register_assets(app, assets):
-    """
-    Registers all css and js assets with `assets`
-    """
-    def _get_resource_files(static_folder, resource_folder, resource_ext):
-        return [resource[len(static_folder) + 1:] for resource in
-                glob.glob(static_folder + '/%s/*.%s' % (resource_folder, resource_ext))]
-
-    def _get_css_files(static_folder):
-        return _get_resource_files(static_folder, 'css', 'css')
-
-    def _get_less_files(static_folder):
-        return _get_resource_files(static_folder, 'css', 'less')
-
-    def _get_js_files(static_folder):
-        return _get_resource_files(static_folder, 'js', 'js')
-
-    def _get_coffee_files(static_folder):
-        return _get_resource_files(static_folder, 'js', 'coffee')
-
-    def _append_blueprint_name(name, files):
-        return ['%s/%s' % (name, f) for f in files]
-
-    static_folder = app.static_folder
-    css_files = _get_css_files(static_folder)
-    less_files = _get_less_files(static_folder)
-    js_files = _get_js_files(static_folder)
-    coffee_files = _get_coffee_files(static_folder)
-
-    for name, bp in app.blueprints.items():
-        if name == 'debugtoolbar':
-            continue
-        static_folder = bp.static_folder
-        if static_folder:
-            css_files.extend(_append_blueprint_name(name, _get_css_files(static_folder)))
-            less_files.extend(_append_blueprint_name(name, _get_less_files(static_folder)))
-            js_files.extend(_append_blueprint_name(name, _get_js_files(static_folder)))
-            coffee_files.extend(_append_blueprint_name(name, _get_coffee_files(static_folder)))
-
-    js_contents = []
-    if js_files:
-        js_contents.append(Bundle(*js_files))
-    if coffee_files:
-        js_contents.append(Bundle(*coffee_files, filters='coffeescript', output='js/coffee_all.js'))
-    if js_contents:
-        js_all = Bundle(*js_contents, filters='closure_js', output='js/application.js')
-        assets.register('js_all', js_all)
-
-    css_contents = []
-    if css_files:
-        css_contents.append(Bundle(*css_files))
-    if less_files:
-        css_contents.append(Bundle(*less_files, filters='less', output='css/less_all.css'))
-    if css_contents:
-        css_all = Bundle(*css_contents,
-                         filters='cssmin', output='css/application.css')
-        assets.register('css_all', css_all)
 
 
 def set_middlewares(app, middlewares):

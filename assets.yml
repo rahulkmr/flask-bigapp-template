@@ -1,0 +1,15 @@
+js_all:
+    filters: jsmin
+    output: js/application.js
+    contents:
+        - js/jquery.js
+        - js/rails.js
+css_all:
+    filters: cssmin
+    output: css/application.css
+    contents:
+        - css/bootstrap.css
+        - css/bootstrap-responsive.css
+        - contents: css/base.less
+          filters: less
+          output: css/base.css
