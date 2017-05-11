@@ -2,10 +2,10 @@
 <html  lang="en">
     <head>
         {% block meta_tags %}{% endblock %}
+        {% block styles %}{% endblock %}
         {% assets 'css_all' %}
         <link  type="text/css" rel="stylesheet" href="{{ ASSET_URL }}" />
         {% endassets %}
-        {% block styles %}{% endblock %}
         {% block head %}{% endblock %}
     </head>
     <body>
@@ -20,6 +20,7 @@
             {% block content %}{% endblock %}
             {% block footer %}{% endblock %}
         </div>
+        {% block script %}{% endblock %}
         {% assets 'js_all' %}
         <script  type="text/javascript" src="{{ ASSET_URL }}"> </script>
         {% endassets %}
